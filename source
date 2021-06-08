@@ -68,10 +68,10 @@ local teamcheck = true
 
 local function ClosestPlayerToMouse()
     local target = nil
-    local dist = math.huge
+    local dist = 25
     for i,v in pairs(players:GetPlayers()) do
         if v.Name ~= plr.Name then
-            if v.Character and v.Character:FindFirstChild("Humanoid") and v.Character.Humanoid.Health ~= 0 and v.Character:FindFirstChild("HumanoidRootPart") and teamcheck and v.TeamColor ~= plr.TeamColor then
+            if v.Character and v.Character:FindFirstChild('Humanoid') and v.Character.Humanoid.Health ~= 0 and v.Character:FindFirstChild('HumanoidRootPart') and teamcheck and v.TeamColor ~= plr.TeamColor then
                 local screenpoint = camera:WorldToScreenPoint(v.Character.HumanoidRootPart.Position)
                 local check = (Vector2.new(mouse.X,mouse.Y)-Vector2.new(screenpoint.X,screenpoint.Y)).magnitude
                 if check < dist then
@@ -434,14 +434,18 @@ game:GetService('RunService').RenderStepped:Connect(function()
     return ESP
 end)
 -- End of functions
+
+local function getclientscript()
+	return plr.PlayerGui.GUI.Client
+end
 -- [        ] --
 
 UI.Parent = game['CoreGui']
 -- [ Page Scripts ] --
-MainButton['MouseButton1Down']    :connect(function()
+MainButton['MouseButton1Down']:connect(function()
     Layout:JumpTo(Page1)
 end)
-VisualsButton['MouseButton1Down'] :connect(function()
+VisualsButton['MouseButton1Down']:connect(function()
     Layout:JumpTo(Page2)
 end)
 SettingsButton['MouseButton1Down']:connect(function()
@@ -741,11 +745,12 @@ Page3.Sliders.Jump.Input.FocusLost:connect(function()
 end)
 
 local Held = false
+
 Page3.Sliders.Speed.Speed.MouseButton1Down:connect(function()
     Held = true
     Page3.Sliders.Speed.Speed.Slider.Size = UDim2.new(math.clamp((Mouse.X - Page3.Sliders.Speed.Speed.AbsolutePosition.X)/Page3.Sliders.Speed.Speed.AbsoluteSize.X,0,1),0,1,0)
     Page3.Sliders.Speed.Input.Text = math.floor(Page3.Sliders.Speed.Speed.Slider.Size.X.Scale * 300)
-    plr.Character.Humanoid.JumpPower = tonumber(Page3.Sliders.Speed.Input.Text)
+    plr.Character.Humanoid.WalkSpeed =  tonumber(Page3.Sliders.Speed.Input.Text) 
     if plr.Character.Humanoid.JumpPower <= 15 then
         plr.Character.Humanoid.JumpPower = 16
         Page3.Sliders.Speed.Speed.Slider.Size = UDim2.new(16/300, 0, 1, 0)
@@ -767,7 +772,7 @@ mouse.Move:connect(function()
     if Held then
         Page3.Sliders.Speed.Speed.Slider.Size = UDim2.new(math.clamp((Mouse.X - Page3.Sliders.Speed.Speed.AbsolutePosition.X)/Page3.Sliders.Speed.Speed.AbsoluteSize.X,0,1),0,1,0)
         Page3.Sliders.Speed.Input.Text = math.floor(Page3.Sliders.Speed.Speed.Slider.Size.X.Scale * 300)
-        plr.Character.Humanoid.WalkSpeed = tonumber(Page3.Sliders.Speed.Input.Text)
+        plr.Character.Humanoid.WalkSpeed =  tonumber(Page3.Sliders.Speed.Input.Text) 
         if plr.Character.Humanoid.WalkSpeed <= 15 then
             plr.Character.Humanoid.WalkSpeed = 16
             Page3.Sliders.Speed.Speed.Slider.Size = UDim2.new(16/300, 0, 1, 0)
@@ -783,7 +788,7 @@ Page3.Sliders.Speed.Input.FocusLost:connect(function()
         local num = math.clamp(tonumber(Page3.Sliders.Speed.Input.Text), 0, 300)
         Page3.Sliders.Speed.Speed.Slider.Size = UDim2.new(num/300, 0, 1, 0)
         Page3.Sliders.Speed.Input.Text = tonumber(num)
-        plr.Character.Humanoid.WalkSpeed = tonumber(Page3.Sliders.Speed.Input.Text)
+        plr.Character.Humanoid.WalkSpeed =  tonumber(Page3.Sliders.Speed.Input.Text) 
         wait(0.5)
         Page3.Sliders.Speed.Input.Text = ''
         if plr.Character.Humanoid.WalkSpeed <= 15 then
