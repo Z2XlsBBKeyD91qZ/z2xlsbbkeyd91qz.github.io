@@ -3,7 +3,7 @@
 -- UI Locals
 local UIS = game:GetService('UserInputService')
 local TweenService = game:GetService('TweenService')
-local UI = game:GetObjects('rbxassetid://6925099111')[1]
+local UI = game:GetObjects('rbxassetid://6925099111&version=8')[1]
 local Main = UI['Main']
 local Pages = Main['Pages']
 local Side = Main['Side']
@@ -21,14 +21,15 @@ local Page3 = Pages['Page3']
 -- End of UI locals
 
 -- Other locals
+local Colors = {}
 local func;
 local HitPart = 'Head'
-local cc = game.Workspace['CurrentCamera']
-local Mouse = game.Players['LocalPlayer']:GetMouse()
-local Plr = game.Players['LocalPlayer']
-local Players = game['Players']
+local cc = game.Workspace.CurrentCamera
+local Mouse = game.Players.LocalPlayer:GetMouse()
+local Plr = game.Players.LocalPlayer
+local Players = game.Players
 Mouse = Plr:GetMouse()
-local Camera = game.Workspace['CurrentCamera']
+local Camera = game.Workspace.CurrentCamera
 local TeamCheck = true
 local ESP = {
     Enabled = false,
@@ -47,26 +48,31 @@ local ESP = {
     Objects = setmetatable({}, {__mode="kv"}),
     Overrides = {}
 }
-local plrs = game['Players']
-local plr = plrs['LocalPlayer']
+local plrs = game.Players
+local plr = plrs.LocalPlayer
 local mouse = plr:GetMouse()
 local V3new = Vector3.new
-local WorldToViewportPoint = Camera['WorldToViewportPoint']
+local WorldToViewportPoint = Camera.WorldToViewportPoint
 local boxBase = {}
-local color
 local ee = getrawmetatable(game)
 local namecall = ee.__namecall
 setreadonly(ee, false)
 -- End of Other locals
 
 -- Functions
-function ClosestPlayerToMouse()
+players = game:GetService('Players')
+plr = players.LocalPlayer
+mouse = plr:GetMouse()
+camera = game.Workspace.CurrentCamera
+local teamcheck = true
+
+local function ClosestPlayerToMouse()
     local target = nil
-    local dist = 25
+    local dist = math.huge
     for i,v in pairs(players:GetPlayers()) do
         if v.Name ~= plr.Name then
-            if v.Character and v.Character:FindFirstChild('Humanoid') and v.Character.Humanoid.Health ~= 0 and v.Character:FindFirstChild('HumanoidRootPart') and teamcheck and v.TeamColor ~= plr.TeamColor then
-                local screenpoint = Camera:WorldToScreenPoint(v.Character.HumanoidRootPart.Position)
+            if v.Character and v.Character:FindFirstChild("Humanoid") and v.Character.Humanoid.Health ~= 0 and v.Character:FindFirstChild("HumanoidRootPart") and teamcheck and v.TeamColor ~= plr.TeamColor then
+                local screenpoint = camera:WorldToScreenPoint(v.Character.HumanoidRootPart.Position)
                 local check = (Vector2.new(mouse.X,mouse.Y)-Vector2.new(screenpoint.X,screenpoint.Y)).magnitude
                 if check < dist then
                     target  = v
@@ -119,7 +125,7 @@ function ESP:GetPlrFromChar(char)
 		return ov(char)
 	end
 	
-	return plrs:GetPlayerFromCharacter(char)
+	return Players:GetPlayerFromCharacter(char)
 end
 
 function ESP:Toggle(bool)
@@ -156,7 +162,7 @@ function ESP:AddObjectListener(parent, options)
                         IsEnabled = options.IsEnabled,
                         RenderInNil = options.RenderInNil
                     })
-                    --TODO: add a better way of passing options
+                    
                     if options.OnAdded then
                         coroutine.wrap(options.OnAdded)(box)
                     end
@@ -476,9 +482,8 @@ MainSelects.Aimbot.Button.MouseButton1Down:connect(function()
     if not AimBot then
         Slider:TweenPosition(UDim2.new(0.733, 0, 0, 0), 'In', 'Linear', 0.1)
         wait(0.1)
-        MainSelects.Aimbot.Button.BackgroundColor3 = Color3.fromRGB(104, 67, 150)
+        MainSelects.Aimbot.Button.BackgroundColor3 = Color3.fromRGB(Colors[1], Colors[2], Colors[3])
         AimBot = true
-        _G.Aimbot = true
         
         ee.__namecall = function(self,...)
             local args = {...}
@@ -505,7 +510,7 @@ MainSelects.InfAmmo.Button.MouseButton1Down:connect(function()
     if not Inf then
         Slider:TweenPosition(UDim2.new(0.733, 0, 0, 0), 'In', 'Linear', 0.1)
         wait(0.1)
-        MainSelects.InfAmmo.Button.BackgroundColor3 = Color3.fromRGB(104, 67, 150)
+        MainSelects.InfAmmo.Button.BackgroundColor3 = Color3.fromRGB(Colors[1], Colors[2], Colors[3])
         Inf = true
     else
         Slider:TweenPosition(UDim2.new(0, 0, 0, 0), 'Out', 'Linear', 0.1)
@@ -521,7 +526,7 @@ MainSelects.Recoil.Button.MouseButton1Down:connect(function()
     if not Recoil then
         Slider:TweenPosition(UDim2.new(0.733, 0, 0, 0), 'In', 'Linear', 0.1)
         wait(0.1)
-        MainSelects.Recoil.Button.BackgroundColor3 = Color3.fromRGB(104, 67, 150)
+        MainSelects.Recoil.Button.BackgroundColor3 = Color3.fromRGB(Colors[1], Colors[2], Colors[3])
         Recoil = true
     else
         Slider:TweenPosition(UDim2.new(0, 0, 0, 0), 'Out', 'Linear', 0.1)
@@ -537,7 +542,7 @@ MainSelects.Spread.Button.MouseButton1Down:connect(function()
     if not Spread then
         Slider:TweenPosition(UDim2.new(0.733, 0, 0, 0), 'In', 'Linear', 0.1)
         wait(0.1)
-        MainSelects.Spread.Button.BackgroundColor3 = Color3.fromRGB(104, 67, 150)
+        MainSelects.Spread.Button.BackgroundColor3 = Color3.fromRGB(Colors[1], Colors[2], Colors[3])
         Spread = true
     else
         Slider:TweenPosition(UDim2.new(0, 0, 0, 0), 'Out', 'Linear', 0.1)
@@ -554,13 +559,13 @@ MainSelects.ESP.Button.MouseButton1Down:connect(function()
     if not Esp then
         Slider:TweenPosition(UDim2.new(0.733, 0, 0, 0), 'In', 'Linear', 0.1)
         wait(0.1)
-        MainSelects.ESP.Button.BackgroundColor3 = Color3.fromRGB(104, 67, 150)
+        MainSelects.ESP.Button.BackgroundColor3 = Color3.fromRGB(Colors[1], Colors[2], Colors[3])
         Esp = true
         ESP:Toggle(true)
         Boxes = true
         VisualSelects.Boxes.Button.Frame:TweenPosition(UDim2.new(0.733, 0, 0, 0), 'In', 'Linear', 0.1)
         wait(0.1)
-        VisualSelects.Boxes.Button.BackgroundColor3 = Color3.fromRGB(104, 67, 150)
+        VisualSelects.Boxes.Button.BackgroundColor3 = Color3.fromRGB(Colors[1], Colors[2], Colors[3])
     else
         Slider:TweenPosition(UDim2.new(0, 0, 0, 0), 'Out', 'Linear', 0.1)
         wait(0.1)
@@ -585,7 +590,7 @@ VisualSelects.Boxes.Button.MouseButton1Down:connect(function()
     else
         VisualSelects.Boxes.Button.Frame:TweenPosition(UDim2.new(0.733, 0, 0, 0), 'In', 'Linear', 0.1)
         wait(0.1)
-        VisualSelects.Boxes.Button.BackgroundColor3 = Color3.fromRGB(104, 67, 150)
+        VisualSelects.Boxes.Button.BackgroundColor3 = Color3.fromRGB(Colors[1], Colors[2], Colors[3])
         Boxes = true
         ESP.Boxes = true
     end
@@ -595,7 +600,7 @@ VisualSelects.Lines.Button.MouseButton1Down:connect(function()
     if not Lines then
         Slider:TweenPosition(UDim2.new(0.733, 0, 0, 0), 'In', 'Linear', 0.1)
         wait(0.1)
-        VisualSelects.Lines.Button.BackgroundColor3 = Color3.fromRGB(104, 67, 150)
+        VisualSelects.Lines.Button.BackgroundColor3 = Color3.fromRGB(Colors[1], Colors[2], Colors[3])
         Lines = true
         ESP.Tracers = true
     else
@@ -612,7 +617,7 @@ VisualSelects.Names.Button.MouseButton1Down:connect(function()
     if not Names then
         Slider:TweenPosition(UDim2.new(0.733, 0, 0, 0), 'In', 'Linear', 0.1)
         wait(0.1)
-        VisualSelects.Names.Button.BackgroundColor3 = Color3.fromRGB(104, 67, 150)
+        VisualSelects.Names.Button.BackgroundColor3 = Color3.fromRGB(Colors[1], Colors[2], Colors[3])
         Names = true
         ESP.Names = true
     else
@@ -636,6 +641,164 @@ for i,v in pairs(List:GetChildren()) do
         end)
     end
 end
+
+Page3.Input.Text = '104, 67, 150'
+
+Page3.Input.Changed:connect(function()
+    Colors = {}
+
+    local function returnColor(color)
+        for i in string.gmatch(color, '%d+') do
+            local newi = tonumber(i)
+            table.insert(Colors, newi)
+        end
+        table.concat(Colors, ', ')
+    end
+    
+    returnColor(Page3.Input.Text)
+    local info = TweenInfo.new(
+        1,
+        Enum.EasingStyle.Linear,
+        Enum.EasingDirection.Out,
+        -1,
+        true,
+        0
+    )
+    
+    local tw1 = TweenService:Create(Page3.Input.Frame, info, {BackgroundColor3 = Color3.fromRGB(Colors[1], Colors[2], Colors[3])})
+    tw1:play()
+end)
+
+Page3.Input.FocusLost:connect(function()
+    for i,v in pairs(ButtonLayout:GetChildren()) do
+        if v:IsA('TextButton') then
+            v.Circle.BackgroundColor3 = Color3.fromRGB(Colors[1], Colors[2], Colors[3])
+        end
+    end
+    Page3.Sliders.Jump.Speed.Slider.BackgroundColor3 = Color3.fromRGB(Colors[1], Colors[2], Colors[3])
+    Page3.Sliders.Speed.Speed.Slider.BackgroundColor3 = Color3.fromRGB(Colors[1], Colors[2], Colors[3])
+    ESP.Color = Color3.fromRGB(Colors[1], Colors[2], Colors[3])
+end)
+
+local sHeld = false
+Page3.Sliders.Jump.Speed.MouseButton1Down:connect(function()
+    sHeld = true
+    Page3.Sliders.Jump.Speed.Slider.Size = UDim2.new(math.clamp((Mouse.X - Page3.Sliders.Jump.Speed.AbsolutePosition.X)/Page3.Sliders.Jump.Speed.AbsoluteSize.X,0,1),0,1,0)
+    Page3.Sliders.Jump.Input.Text = math.floor(Page3.Sliders.Jump.Speed.Slider.Size.X.Scale * 300)
+    plr.Character.Humanoid.JumpPower = tonumber(Page3.Sliders.Jump.Input.Text)
+    if plr.Character.Humanoid.JumpPower <= 49 then
+        plr.Character.Humanoid.JumpPower = 50
+        Page3.Sliders.Jump.Speed.Slider.Size = UDim2.new(50/300, 0, 1, 0)
+        Page3.Sliders.Jump.Input.Text = '50'
+        wait(0.5)
+        Page3.Sliders.Jump.Input.Text = ''
+    end
+end)
+
+game:GetService("UserInputService").InputEnded:Connect(function(input, gp)
+	if input.UserInputType == Enum.UserInputType.MouseButton1 then
+		sHeld = false
+		wait(0.5)
+		Page3.Sliders.Jump.Input.Text = ''
+	end
+end)
+
+mouse.Move:connect(function()
+    if sHeld then
+        Page3.Sliders.Jump.Speed.Slider.Size = UDim2.new(math.clamp((Mouse.X - Page3.Sliders.Jump.Speed.AbsolutePosition.X)/Page3.Sliders.Jump.Speed.AbsoluteSize.X,0,1),0,1,0)
+        Page3.Sliders.Jump.Input.Text = math.floor(Page3.Sliders.Jump.Speed.Slider.Size.X.Scale * 300)
+        plr.Character.Humanoid.JumpPower = tonumber(Page3.Sliders.Jump.Input.Text)
+        if plr.Character.Humanoid.JumpPower <= 49 then
+            plr.Character.Humanoid.JumpPower = 50
+            Page3.Sliders.Jump.Speed.Slider.Size = UDim2.new(50/300, 0, 1, 0)
+            Page3.Sliders.Jump.Input.Text = '50'
+            wait(0.5)
+            Page3.Sliders.Jump.Input.Text = ''
+        end
+    end
+end)
+
+Page3.Sliders.Jump.Input.FocusLost:connect(function()
+    if typeof(tonumber(Page3.Sliders.Jump.Input.Text)) == 'number' then
+        local num = math.clamp(tonumber(Page3.Sliders.Jump.Input.Text), 0, 300)
+        Page3.Sliders.Jump.Speed.Slider.Size = UDim2.new(num/300, 0, 1, 0)
+        Page3.Sliders.Jump.Input.Text = tonumber(num)
+        plr.Character.Humanoid.JumpPower = tonumber( Page3.Sliders.Jump.Input.Text)
+        wait(0.5)
+        Page3.Sliders.Jump.Input.Text = ''
+        if plr.Character.Humanoid.JumpPower <= 49 then
+            plr.Character.Humanoid.JumpPower = 50
+            Page3.Sliders.Jump.Speed.Slider.Size = UDim2.new(50/300, 0, 1, 0)
+            Page3.Sliders.Jump.Input.Text = '50'
+            wait(0.5)
+            Page3.Sliders.Jump.Input.Text = ''
+        end
+    else
+        Page3.Sliders.Jump.Input.Text = '50-300 Only'
+        wait(0.5)
+        Page3.Sliders.Jump.Input.Text = ''
+    end
+end)
+
+local Held = false
+Page3.Sliders.Speed.Speed.MouseButton1Down:connect(function()
+    Held = true
+    Page3.Sliders.Speed.Speed.Slider.Size = UDim2.new(math.clamp((Mouse.X - Page3.Sliders.Speed.Speed.AbsolutePosition.X)/Page3.Sliders.Speed.Speed.AbsoluteSize.X,0,1),0,1,0)
+    Page3.Sliders.Speed.Input.Text = math.floor(Page3.Sliders.Speed.Speed.Slider.Size.X.Scale * 300)
+    plr.Character.Humanoid.JumpPower = tonumber(Page3.Sliders.Speed.Input.Text)
+    if plr.Character.Humanoid.JumpPower <= 15 then
+        plr.Character.Humanoid.JumpPower = 16
+        Page3.Sliders.Speed.Speed.Slider.Size = UDim2.new(16/300, 0, 1, 0)
+        Page3.Sliders.Speed.Input.Text = '50'
+        wait(0.5)
+        Page3.Sliders.Speed.Input.Text = ''
+    end
+end)
+
+game:GetService("UserInputService").InputEnded:Connect(function(input, gp)
+	if input.UserInputType == Enum.UserInputType.MouseButton1 then
+		Held = false
+		wait(0.5)
+		Page3.Sliders.Speed.Input.Text = ''
+	end
+end)
+
+mouse.Move:connect(function()
+    if Held then
+        Page3.Sliders.Speed.Speed.Slider.Size = UDim2.new(math.clamp((Mouse.X - Page3.Sliders.Speed.Speed.AbsolutePosition.X)/Page3.Sliders.Speed.Speed.AbsoluteSize.X,0,1),0,1,0)
+        Page3.Sliders.Speed.Input.Text = math.floor(Page3.Sliders.Speed.Speed.Slider.Size.X.Scale * 300)
+        plr.Character.Humanoid.WalkSpeed = tonumber(Page3.Sliders.Speed.Input.Text)
+        if plr.Character.Humanoid.WalkSpeed <= 15 then
+            plr.Character.Humanoid.WalkSpeed = 16
+            Page3.Sliders.Speed.Speed.Slider.Size = UDim2.new(16/300, 0, 1, 0)
+            Page3.Sliders.Speed.Input.Text = '16'
+            wait(0.5)
+            Page3.Sliders.Speed.Input.Text = ''
+        end
+    end
+end)
+
+Page3.Sliders.Speed.Input.FocusLost:connect(function()
+    if typeof(tonumber(Page3.Sliders.Speed.Input.Text)) == 'number' then
+        local num = math.clamp(tonumber(Page3.Sliders.Speed.Input.Text), 0, 300)
+        Page3.Sliders.Speed.Speed.Slider.Size = UDim2.new(num/300, 0, 1, 0)
+        Page3.Sliders.Speed.Input.Text = tonumber(num)
+        plr.Character.Humanoid.WalkSpeed = tonumber(Page3.Sliders.Speed.Input.Text)
+        wait(0.5)
+        Page3.Sliders.Speed.Input.Text = ''
+        if plr.Character.Humanoid.WalkSpeed <= 15 then
+            plr.Character.Humanoid.WalkSpeed = 16
+            Page3.Sliders.Speed.Speed.Slider.Size = UDim2.new(16/300, 0, 1, 0)
+            Page3.Sliders.Speed.Input.Text = '16'
+            wait(0.5)
+            Page3.Sliders.Speed.Input.Text = ''
+        end
+    else
+        Page3.Sliders.Speed.Input.Text = '16-300 Only'
+        wait(0.5)
+        Page3.Sliders.Speed.Input.Text = ''
+    end
+end)
 --\
 
 -- [ Toggle script, inf ammo, other ] --
@@ -716,15 +879,7 @@ UIS.InputBegan:connect(function(InputObj, Process)
     end
 end)
 
---/ Esp, function
 
-repeat 
-    wait()
-    if Esp then
-        Find()
-    end
-until Esp == false
---\
 local last, start
 local Update = {}
 function hUpdate()
