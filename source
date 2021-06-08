@@ -4,31 +4,31 @@
 local UIS = game:GetService('UserInputService')
 local TweenService = game:GetService('TweenService')
 local UI = game:GetObjects('rbxassetid://6925099111')[1]
-local Main = UI.Main
-local Pages = Main.Pages
-local Side = Main.Side
-local ButtonLayout = Side.Layout
-local Layout = Pages.UIPageLayout
-local FpsLabel = Side.Label
+local Main = UI['Main']
+local Pages = Main['Pages']
+local Side = Main['Side']
+local ButtonLayout = Side['Layout']
+local Layout = Pages['UIPageLayout']
+local FpsLabel = Side['Label']
 -- / Buttons
-local MainButton = ButtonLayout.mButton
-local VisualsButton = ButtonLayout.vButton
-local SettingsButton = ButtonLayout.sButton
+local MainButton = ButtonLayout['mButton']
+local VisualsButton = ButtonLayout['vButton']
+local SettingsButton = ButtonLayout['sButton']
 -- / Pages
-local Page1 = Pages.Page1
-local Page2 = Pages.Page2
-local Page3 = Pages.Page3
+local Page1 = Pages['Page1']
+local Page2 = Pages['Page2']
+local Page3 = Pages['Page3']
 -- End of UI locals
 
 -- Other locals
 local func;
 local HitPart = 'Head'
-local cc = game.Workspace.CurrentCamera
-local Mouse = game.Players.LocalPlayer:GetMouse()
-local Plr = game.Players.LocalPlayer
-local Players = game.Players
+local cc = game.Workspace['CurrentCamera']
+local Mouse = game.Players['LocalPlayer']:GetMouse()
+local Plr = game.Players['LocalPlayer']
+local Players = game['Players']
 Mouse = Plr:GetMouse()
-local Camera = game.Workspace.CurrentCamera
+local Camera = game.Workspace['CurrentCamera']
 local TeamCheck = true
 local ESP = {
     Enabled = false,
@@ -47,13 +47,16 @@ local ESP = {
     Objects = setmetatable({}, {__mode="kv"}),
     Overrides = {}
 }
-local plrs = game.Players
-local plr = plrs.LocalPlayer
+local plrs = game['Players']
+local plr = plrs['LocalPlayer']
 local mouse = plr:GetMouse()
 local V3new = Vector3.new
-local WorldToViewportPoint = Camera.WorldToViewportPoint
+local WorldToViewportPoint = Camera['WorldToViewportPoint']
 local boxBase = {}
 local color
+local ee = getrawmetatable(game)
+local namecall = ee.__namecall
+setreadonly(ee, false)
 -- End of Other locals
 
 -- Functions
@@ -62,8 +65,8 @@ function ClosestPlayerToMouse()
     local dist = 25
     for i,v in pairs(players:GetPlayers()) do
         if v.Name ~= plr.Name then
-            if v.Character and v.Character:FindFirstChild("Humanoid") and v.Character.Humanoid.Health ~= 0 and v.Character:FindFirstChild("HumanoidRootPart") and teamcheck and v.TeamColor ~= plr.TeamColor then
-                local screenpoint = camera:WorldToScreenPoint(v.Character.HumanoidRootPart.Position)
+            if v.Character and v.Character:FindFirstChild('Humanoid') and v.Character.Humanoid.Health ~= 0 and v.Character:FindFirstChild('HumanoidRootPart') and teamcheck and v.TeamColor ~= plr.TeamColor then
+                local screenpoint = Camera:WorldToScreenPoint(v.Character.HumanoidRootPart.Position)
                 local check = (Vector2.new(mouse.X,mouse.Y)-Vector2.new(screenpoint.X,screenpoint.Y)).magnitude
                 if check < dist then
                     target  = v
